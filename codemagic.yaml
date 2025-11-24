@@ -5,11 +5,9 @@ workflows:
     instance_type: mac_mini_m1
     environment:
       java: 17
-      android_stack: latest
     scripts:
       - name: Build Android Debug APK
         script: |
-          # بما أنه لا يوجد gradlew سنستخدم جرادل المثبت في السيرفر
           gradle assembleDebug
     artifacts:
       - app/build/outputs/apk/debug/*.apk
