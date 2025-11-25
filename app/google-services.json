@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "485500422612",
+    "project_id": "falcon-23647",
+    "storage_bucket": "falcon-23647.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485500422612:android:ec9c46c1bced4399e72e41",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyTDOX0OPsig2vk0qpQPTGhNDiWhk4yZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
