@@ -1,6 +1,7 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    // ضفنا هنا رقم الإصدار عشان السيرفر يعرف يحمله
+    id 'com.android.application' version '8.1.0'
+    id 'org.jetbrains.kotlin.android' version '1.8.0'
 }
 
 android {
@@ -17,7 +18,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
 }
