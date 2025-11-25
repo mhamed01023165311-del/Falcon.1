@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application' version '8.1.0'
     id 'org.jetbrains.kotlin.android' version '1.8.0'
+    // ده السطر المهم اللي بيربط جوجل بالتطبيق
+    id 'com.google.gms.google-services' version '4.3.15'
 }
 
 android {
@@ -15,7 +17,6 @@ android {
         versionName "1.0"
     }
 
-    // هنا الحل: أجبرنا التطبيق يستخدم جافا 17
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -27,4 +28,9 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
+    
+    // مكتبات Firebase (السيرفر + الصور + البيانات)
+    implementation platform('com.google.firebase:firebase-bom:32.2.0')
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
 }
