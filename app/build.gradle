@@ -14,9 +14,17 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    // هنا الحل: أجبرنا التطبيق يستخدم جافا 17
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
 }
 
 dependencies {
-    // شلنا كل المكتبات المعقدة عشان التطبيق يتبني فوراً
     implementation 'androidx.core:core-ktx:1.9.0'
 }
