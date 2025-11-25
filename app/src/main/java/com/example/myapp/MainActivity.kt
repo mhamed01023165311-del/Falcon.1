@@ -16,13 +16,11 @@ class MainActivity : Activity() {
     // رابط موقعك
     val myWebsiteUrl = "https://mhamed01023165311-del.github.io/Falcon.1/"
     
-    // متغير لمعرفة حالة الرادار
     var isRadarOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // التصميم
         val scrollView = ScrollView(this)
         val layout = LinearLayout(this)
         layout.orientation = LinearLayout.VERTICAL
@@ -30,7 +28,6 @@ class MainActivity : Activity() {
         layout.setPadding(40, 40, 40, 40)
         layout.setBackgroundColor(Color.parseColor("#F5F7FA"))
 
-        // دوال مساعدة للتصميم
         fun createInput(hint: String): EditText {
             val input = EditText(this)
             input.hint = hint
@@ -42,7 +39,6 @@ class MainActivity : Activity() {
             return input
         }
 
-        // 1. الخانات
         val imgLinkInput = createInput("رابط صورتك الشخصية (Link)")
         val nameInput = createInput("الاسم")
         val jobInput = createInput("الوظيفة")
@@ -50,19 +46,16 @@ class MainActivity : Activity() {
         val addressInput = createInput("العنوان")
         val fbInput = createInput("رابط فيسبوك")
 
-        // 2. زر الرادار (تشغيل دائم)
         val radarBtn = Button(this)
         radarBtn.text = "تشغيل الرادار (يعمل في الخلفية) 📡"
         radarBtn.setBackgroundColor(Color.parseColor("#ff6b6b"))
         radarBtn.setTextColor(Color.WHITE)
 
-        // 3. زر إنشاء الكارت
         val shareBtn = Button(this)
         shareBtn.text = "فتح الكارت ومشاركته 🚀"
         shareBtn.setBackgroundColor(Color.parseColor("#007bff"))
         shareBtn.setTextColor(Color.WHITE)
 
-        // منطق زر المشاركة
         shareBtn.setOnClickListener {
             val name = nameInput.text.toString()
             if(name.isNotEmpty()){
@@ -73,44 +66,46 @@ class MainActivity : Activity() {
             }
         }
 
-        // منطق زر الرادار (تشغيل الخدمة)
         radarBtn.setOnClickListener {
             if (!isRadarOn) {
-                // طلب الصلاحيات الشاملة
+                // قائمة الصلاحيات المطلوبة
                 val permissions = mutableListOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.BLUETOOTH_ADVERTISE,
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT
                 )
-                // إضافة صلاحية الخلفية للأندرويد الحديث
+                // إضافة صلاحية "الخلفية" و "الإشعارات" للأندرويد الحديث
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     permissions.add(Manifest.permission.FOREGROUND_SERVICE)
                 }
+                // ده الكود الجديد اللي هيحل المشكلة (طلب إذن الإشعار)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
 
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // التحقق وطلب الصلاحيات
+                var allGranted = true
+                for (perm in permissions) {
+                    if (checkSelfPermission(perm) != PackageManager.PERMISSION_GRANTED) {
+                        allGranted = false
+                        break
+                    }
+                }
+
+                if (!allGranted) {
                     requestPermissions(permissions.toTypedArray(), 1)
                     return@setOnClickListener
                 }
 
-                // تشغيل الخدمة الدائمة
-                val serviceIntent = Intent(this, RadarService::class.java)
-                serviceIntent.putExtra("MY_NAME", nameInput.text.toString())
+                // تشغيل الخدمة
+                startRadarService(nameInput.text.toString())
                 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(serviceIntent)
-                } else {
-                    startService(serviceIntent)
-                }
-
-                radarBtn.text = "الرادار يعمل الآن (يمكنك الخروج) 🔄"
+                radarBtn.text = "الرادار يعمل الآن (الإشعار ظاهر بالأعلى) 🔄"
                 radarBtn.setBackgroundColor(Color.parseColor("#20bf6b"))
                 isRadarOn = true
             } else {
-                // إيقاف الخدمة
-                val serviceIntent = Intent(this, RadarService::class.java)
-                stopService(serviceIntent)
-                
+                stopRadarService()
                 radarBtn.text = "تشغيل الرادار (يعمل في الخلفية) 📡"
                 radarBtn.setBackgroundColor(Color.parseColor("#ff6b6b"))
                 isRadarOn = false
@@ -128,5 +123,20 @@ class MainActivity : Activity() {
 
         scrollView.addView(layout)
         setContentView(scrollView)
+    }
+
+    private fun startRadarService(name: String) {
+        val serviceIntent = Intent(this, RadarService::class.java)
+        serviceIntent.putExtra("MY_NAME", name)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
+        }
+    }
+
+    private fun stopRadarService() {
+        val serviceIntent = Intent(this, RadarService::class.java)
+        stopService(serviceIntent)
     }
 }
